@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board.spring.mybatis.BoardDAO">
+
+	<insert id="insertBoard" parameterType="boarddto">
+		insert into board(title, contents, writer, pw, viewcount, writingtime)
+		values(#{title}, #{contents}, #{writer}, #{pw}, 0, now());
+	</insert>
+	
+	<select id="pagingBoardList" parameterType="int" resultType="boarddto">
+		select * from board order by writingtime desc limit
+		<foreach collection="array" item="num" separator=",">
+			#{num}
+		</foreach>
+	</select>
+	
+	<select id="getTotalBoard" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<update id="increaseViewCount" parameterType="int">
+		update board set viewcount = viewcount + 1 where seq = #{seq}
+	</update>
+	
+	<select id="oneBoard" parameterType="int" resultType="boarddto">
+		select * from board where seq = #{seq}
+	</select>
+	
+	<!-- set title=#{title}, contents=#{contents}, writingtime=now() where seq=#{seq} -->
+	<update id="updateBoard" parameterType="boarddto">
+		update board set title=#{title}, contents=#{contents}, writingtime=now() where seq=#{seq}
+	</update>
+	
+	<!-- delete from board where seq=#{seq} -->
+	<delete id="deleteBoard" parameterType="int">
+		delete from board where seq=#{seq}
+	</delete>
+	
+	<select id="titleBoardSearchList" parameterType="String" resultType="boarddto">
+		select * from board where title like #{word}
+	</select>
+	
+	<select id="contentsBoardSearchList" parameterType="String" resultType="boarddto">
+		select * from board where contents like #{word}
+	</select>
+	
+	<select id="writerBoardSearchList" parameterType="String" resultType="boarddto">
+		select * from board where writer like #{word}
+	</select>
+	
+	<select id="allBoardSearchList" parameterType="String" resultType="boarddto">
+		select * from board 
+		where title like #{word} or contents like #{word} or writer like #{word}
+	</select>
+	
+</mapper>

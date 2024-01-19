@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board.spring.mybatis.MemberDAO">
+
+	<select id="memberVerification" resultType="String" parameterType="memberdto">
+		select memberid
+		from members
+		where memberid = #{memberid} and pw = #{pw}
+	</select>
+	
+	<select id="memberList" resultType="memberdto">
+		select *
+		from members
+		order by regdate desc
+	</select>
+	
+	<select id="oneMember" resultType="memberdto" parameterType="String">
+		select memberid, pw, membername, phone, email,
+		date_format(regdate, "%Y년도%m월%d일") regdate
+		from members
+		where memberid= #{memberid}
+	</select>
+	
+	<select id="memberList2" resultType="memberdto" parameterType="String">
+		select *
+		from members
+		where membername like concat("%", #{regexp}, "%")
+	</select>
+	
+	<insert id="insertMember" parameterType="memberdto">
+		insert into members
+		values (#{memberid}, #{pw}, #{membername}, #{phone}, #{email}, now());
+	</insert>
+	
+	<update id="updateMember" parameterType="memberdto">
+		update members
+		set membername=#{membername}, phone=#{phone}, email=#{email}
+		where memberid=#{memberid}
+	</update>
+	
+	<delete id="deleteMember" parameterType="String">
+		delete from members where memberid=#{memberid}
+	</delete>
+	
+</mapper>
